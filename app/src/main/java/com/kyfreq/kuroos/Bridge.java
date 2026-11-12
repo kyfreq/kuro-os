@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -61,6 +62,8 @@ public class Bridge {
                     o.put("name", r.loadLabel(pm).toString());
                     o.put("pkg", pkg);
                     o.put("icon", iconData(r.loadIcon(pm)));
+                    ApplicationInfo ai = r.activityInfo.applicationInfo;
+                    o.put("game", ai != null && ai.category == ApplicationInfo.CATEGORY_GAME);
                     apps.add(o);
                 } catch (Exception ignored) { }
             }
@@ -166,6 +169,21 @@ public class Bridge {
         Intent i = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.runOnUiThread(() -> activity.startActivity(i));
+    }
+
+    /** Returns "current,max" of the music volume. */
+    @JavascriptInterface
+    public String getVolume() {
+        AudioManager am = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        return am.getStreamVolume(AudioManager.STREAM_MUSIC) + "," + am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+    }
+
+    /** dir 1 = louder, -1 = quieter. Shows the normal volume slider. */
+    @JavascriptInterface
+    public void volume(int dir) {
+        AudioManager am = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        am.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                dir > 0 ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
     }
 
     // ---------- phone ----------

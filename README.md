@@ -18,5 +18,6 @@ Every push to `main` builds a new APK on GitHub and adds it to Releases. Install
 
 ## Where things are
 
-- `app/src/main/assets/index.html` is the whole home screen (HTML, CSS, JS). Character lines are in the `LINES` object.
+- `web/prototype.html` is the whole home screen (HTML, CSS, JS). Character lines are in the `LINES` object.
+- `python3 tools/make_asset.py` turns it into `app/src/main/assets/index.html`, the copy the app loads.
 - `app/src/main/java/com/kyfreq/kuroos/Bridge.java` connects the page to the phone: apps, music, battery, vibration.

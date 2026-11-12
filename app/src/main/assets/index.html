@@ -4,12 +4,13 @@
 <script>if(window.Android)document.documentElement.classList.add("native")</script>
 <style>
 [hidden]{display:none!important}img{max-width:100%}
-html.native,html.native body{background:transparent!important;background-image:none!important;margin:0;padding:0!important;height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
-html.native .wrap{display:block;max-width:none;margin:0}
-html.native .phone{padding:0;border-radius:0;background:none;box-shadow:none;max-width:none}
-html.native .screen{height:100vh;border-radius:0;background:var(--wall,none) center/cover no-repeat}
+html.native,html.native body{background:transparent!important;background-image:none!important;margin:0;padding:0!important;width:100%;height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
+html.native body{position:fixed;inset:0}
+html.native .wrap,html.native .phone{display:block;width:100%;height:100%;max-width:none;margin:0;padding:0;border-radius:0;background:none;box-shadow:none}
+html.native .screen{width:100%;height:100%;border-radius:0;background:var(--wall,none) center/cover no-repeat}
 html.native .screen::before,html.native .status,html.native .notes{display:none}
-html.native .pages{padding-top:6px}
+html.native .pages{touch-action:pan-x}
+html.native .pgin{padding-top:8px}
 html.native .drawer{top:8px}
 </style>
 <title>Kuro OS</title>
@@ -27,6 +28,7 @@ html.native .drawer{top:8px}
   --f-body:Verdana,Tahoma,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
 }
+*,*::before,*::after{box-sizing:border-box}
 html,body{background:var(--page);color:var(--ink)}
 body{font-family:var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;
   background-image:linear-gradient(#ffffff70 1px,transparent 1px),linear-gradient(90deg,#ffffff70 1px,transparent 1px);background-size:22px 22px}
@@ -55,7 +57,8 @@ body{font-family:var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0p
 
 .pages{position:relative;z-index:1;flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .pages::-webkit-scrollbar{display:none}
-.pg{flex:0 0 100%;scroll-snap-align:start;padding:6px 12px 10px;display:flex;flex-direction:column;gap:11px;min-width:0}
+.pg{flex:0 0 100%;scroll-snap-align:start;min-width:0;overflow:hidden}
+.pgin{width:100%;padding:6px 12px 10px;display:flex;flex-direction:column;gap:11px}
 .dots{position:relative;z-index:2;display:flex;justify-content:center;gap:6px;padding:4px 0 6px}
 .dots i{width:7px;height:7px;border:1px solid var(--ink);background:#ffffffa0}
 .dots i.on{background:var(--ink)}
@@ -131,6 +134,7 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
 .sms{font:13px/1.15 var(--f-lcd);color:#0f2a5c;min-height:44px;background:#ffffff70;border-radius:3px;padding:2px 4px}
 .sms b{font-weight:400;color:#b8146a}
 .soft{display:flex;justify-content:space-between;font:7px var(--f-pix);color:#0f2a5c}
+.lidx{position:absolute;top:8px;right:12px}
 .hinge{width:84%;height:9px;background:linear-gradient(180deg,#8c95a5,#e9ecf1 50%,#8c95a5);border-left:1px solid var(--chrome-edge);border-right:1px solid var(--chrome-edge)}
 .base{width:94%;border-radius:6px 6px 22px 22px;padding:6px 8px 10px;display:grid;grid-template-columns:1fr 34px 1fr;gap:5px;align-items:center}
 .key{height:16px;border-radius:8px;border:1px solid var(--chrome-edge);background:linear-gradient(180deg,#fff,#c3c9d4);font:7px var(--f-pix);cursor:pointer;color:var(--ink)}
@@ -163,6 +167,8 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
 .start img{width:20px;image-rendering:pixelated}
 .tasks{flex:1;display:flex;gap:4px;min-width:0;overflow:hidden}
 .tasks button{font:10px var(--f-ui);border:1px solid #7f8796;border-radius:3px;background:linear-gradient(180deg,#fff,#d3d8e1);padding:3px 6px;white-space:nowrap;cursor:pointer;color:var(--ink)}
+.appsbtn{height:30px;width:34px;border:1px solid #7f8796;border-radius:4px;background:linear-gradient(180deg,#fff,#d3d8e1);display:grid;place-items:center;cursor:pointer;padding:0}
+.appsbtn img{width:20px;image-rendering:pixelated}
 .tray{display:flex;align-items:center;gap:6px;font:10px var(--f-pix);padding:2px 8px;border:1px solid #9aa2b1;border-radius:3px;background:#ffffff80;box-shadow:inset 1px 1px 0 #9aa2b180}
 .tray img{width:14px;image-rendering:pixelated}
 
@@ -245,7 +251,7 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
 
    <div class="pages" id="pages">
     <!-- PAGE 1 -->
-    <div class="pg" id="pg1">
+    <div class="pg" id="pg1"><div class="pgin">
      <div class="clock chrome">
       <button class="vfd" id="vfd" aria-label="Clock"><span class="t" id="clk">15:58</span><span class="d" id="date">DO 12.11<br><b>KURO</b></span></button>
       <button class="wx" id="wx" aria-label="Weather"><img id="wxIco" alt="">6° CLOUDY</button>
@@ -282,7 +288,7 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
       </div>
 
       <div class="flip" id="w-m">
-       <div class="lid chrome">
+       <div class="lid chrome"><button class="xbtn x lidx" data-min="m" aria-label="Close flip phone">×</button>
         <div class="scr">
          <div class="hd"><span>▮▮▮ RADIO</span><span id="nm-m">MIC</span><span>✉1</span></div>
          <div class="stage" id="st-m" tabindex="0" aria-label="Mic: tap to talk, rub to pet"></div>
@@ -300,10 +306,10 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
      </div>
 
      <div class="icons" id="dock"></div>
-    </div>
+    </div></div>
 
     <!-- PAGE 2 -->
-    <div class="pg" id="pg2">
+    <div class="pg" id="pg2"><div class="pgin">
      <div class="win note">
       <div class="tbar"><span class="nm">todo.txt - Notepad</span><button class="xbtn" tabindex="-1">_</button><button class="xbtn x" tabindex="-1">×</button></div>
       <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span></div>
@@ -319,7 +325,7 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
      </div>
 
      <div class="icons" id="drawer"></div>
-    </div>
+    </div></div>
    </div>
 
    <div class="dots"><i class="on"></i><i></i></div>
@@ -328,6 +334,7 @@ button:focus-visible,textarea:focus-visible,.stage:focus-visible{outline:2px dot
    <div class="task">
     <button class="start" id="startBtn"><img id="startIco" alt="">kuro</button>
     <div class="tasks" id="tasks"></div>
+    <button class="appsbtn" id="appsBtn" aria-label="All programs"><img data-ico="grid" alt=""></button>
     <div class="tray"><img id="trayVol" alt=""><span id="trayClk">15:58</span></div>
    </div>
 
@@ -435,6 +442,7 @@ const ICONS={
  heart:x=>{x.fillStyle="#ff5fa8";circ(x,8,9,5);circ(x,16,9,5);x.beginPath();x.moveTo(3,11);x.lineTo(12,21);x.lineTo(21,11);x.fill();x.fillStyle="#fff";x.fillRect(6,7,2,2)},
  star:x=>{x.fillStyle="#fff";x.beginPath();for(let i=0;i<10;i++){const r=i%2?4:11,a=i*Math.PI/5-Math.PI/2;x.lineTo(12+r*Math.cos(a),12+r*Math.sin(a))}x.fill()},
  speaker:x=>{x.fillStyle="#3a4150";x.fillRect(4,9,5,6);x.beginPath();x.moveTo(9,9);x.lineTo(15,4);x.lineTo(15,20);x.lineTo(9,15);x.fill();x.fillStyle="#2d5fd0";x.fillRect(17,9,2,6);x.fillRect(20,7,2,10)},
+ grid:x=>{["#ff5fa8","#5d97f7","#3fbf4a","#ffd23a","#9a88ff","#ff8a2a","#27b4ff","#ff3b5c","#7cf06a"].forEach((c,i)=>{x.fillStyle=c;x.fillRect(3+(i%3)*7,3+Math.floor(i/3)*7,5,5)})},
  person:x=>{x.fillStyle="#9aa2b1";circ(x,12,8,5);x.beginPath();x.arc(12,24,10,Math.PI,0);x.fill()}
 };
 const I={};for(const k in ICONS)I[k]=pix(ICONS[k]);
@@ -466,18 +474,23 @@ const cur=()=>NATIVE?[media.needs?"Tap here to connect your music":(media.none?"
 let si=0,pos=NATIVE?0:48,playing=!NATIVE,vol=-38,pal=0,liked=new Set(store.get("liked",[]));
 const PALS=[["#3b6cff","#27b4ff","#22e0c8","#4cf06a","#c8f03a","#ffd23a","#ff8a2a","#ff3b5c"],["#6fe3ff","#6fe3ff","#6fe3ff","#6fe3ff","#9ff0ff","#9ff0ff","#ffffff","#ffffff"],["#ff5fa8","#ff5fa8","#ff7fc0","#ff9fd0","#d6b8ff","#b8a0ff","#9a88ff","#ffffff"]];
 const SRCS=["SPOTIFY","MD","FM 98.3"];let srcI=0;
-function songUI(){const s=cur();$("ttl").textContent=(s[0]+" — "+s[1]).toUpperCase();$("trk").textContent=NATIVE?(media.app||"MUSIC").slice(0,6).toUpperCase():"TRK "+pad(si+1);$("bLike").style.color=liked.has(s[0])?"#e8213c":"";$("playLbl").textContent=playing?"PAUSE":"PLAY";$("bPlay").style.setProperty("--lit",playing?1:.25)}
+function songUI(){const s=cur();$("ttl").textContent=(s[0]+" — "+s[1]).toUpperCase();$("trk").textContent=NATIVE?(playing?"PLAY":"PAUSE"):"TRK "+pad(si+1);$("bLike").style.color=liked.has(s[0])?"#e8213c":"";$("playLbl").textContent=playing?"PAUSE":"PLAY";$("bPlay").style.setProperty("--lit",playing?1:.25)}
 function tm(){const m=Math.floor(pos/60);$("tm").textContent=m+":"+pad(Math.floor(pos%60))}
 setInterval(()=>{if(NATIVE)return pollMedia();if(playing){pos++;if(pos>=songs[si][2]){next(1)}tm()}},1000);
 function next(dir){if(NATIVE){try{Android.mediaCmd(dir>0?"next":"prev")}catch(e){}return}si=(si+dir+songs.length)%songs.length;pos=0;songUI();tm();if(Math.random()<.7)react("m","song")}
 $("bPlay").onclick=()=>{if(NATIVE){try{Android.mediaCmd("toggle")}catch(e){}playing=!playing;songUI();return}playing=!playing;songUI()};
 function pollMedia(){let j;try{j=JSON.parse(Android.getMedia())}catch(e){return}
   const old=media.title;media={title:j.title||"",artist:j.artist||"",dur:(j.dur||0)/1000,needs:!!j.needs,none:!!j.none,app:j.app||""};
-  playing=!!j.playing;pos=(j.pos||0)/1000;songUI();tm();if(old&&media.title&&old!==media.title&&Math.random()<.7)react("m","song")}
+  const was=playing;playing=!!j.playing;pos=(j.pos||0)/1000;
+  try{const [cv,mv]=Android.getVolume().split(",").map(Number);if(mv)vol=Math.round(-60+60*cv/mv)}catch(e){}
+  songUI();tm();
+  if(media.title&&old!==media.title)react("m","song");
+  else if(media.title&&!was&&playing)react("m","play");
+  else if(media.title&&was&&!playing&&Math.random()<.5)react("m","pause")}
 document.querySelector(".lcd").addEventListener("click",()=>{if(NATIVE&&media.needs){try{Android.openNotifAccess()}catch(e){}}});
 $("bNext").onclick=()=>next(1);$("bPrev").onclick=()=>{if(NATIVE)return next(-1);if(pos>3){pos=0;tm()}else next(-1)};
 $("bShuf").onclick=()=>NATIVE?next(1):next(1+Math.floor(Math.random()*(songs.length-1)));
-$("vUp").onclick=()=>vol=Math.min(0,vol+2);$("vDn").onclick=()=>vol=Math.max(-60,vol-2);
+$("vUp").onclick=()=>{if(NATIVE){try{Android.volume(1)}catch(e){}}vol=Math.min(0,vol+2)};$("vDn").onclick=()=>{if(NATIVE){try{Android.volume(-1)}catch(e){}}vol=Math.max(-60,vol-2)};
 $("bDspl").onclick=()=>{pal=(pal+1)%PALS.length};
 $("bSrc").onclick=()=>{srcI=(srcI+1)%SRCS.length;$("srcLbl").textContent=SRCS[srcI]};
 $("bLike").onclick=()=>{const s=cur()[0];liked.has(s)?liked.delete(s):liked.add(s);store.set("liked",[...liked]);songUI();if(liked.has(s))react("m","like")};
@@ -504,35 +517,43 @@ arc();
 
 /* ===== characters ===== */
 const LINES={
- a:{night:["It's {t}. Phone down. Sleep.","{t}. You're making tomorrow harder. Bed.","I'm not doing this with you at {t}."],
-    morning:["Morning. Water first.","You've got somewhere to be. Move.","Eat something before you leave."],
-    day:["Did you do the thing you said you'd do?","You've been scrolling. Five more minutes, then something useful.","Hydrate. That's not a suggestion."],
-    evening:["Finish what you started. Then rest.","Plan tomorrow now, not at midnight.","Fine. You did enough today."],
-    lowbatt:["{b}% battery. Charge it.","Your phone is at {b}%. Logically, that's a problem."],
-    task:["\"{task}\". Still on your list.","You wrote \"{task}\". Do it."],
-    pet:["...Thirty seconds.","Don't make this a habit.","...Hm. Fine."],
-    ok:["Good.","Then do it.","Hm."],
-    snooze:["No.","Five minutes. I'm counting.","You said that an hour ago."],
-    clock:["Yes, it's {t}. You can read."],
-    cat:["...Is the cat fed?","Leave the cat alone. ...Fine, one more pet."]},
- m:{night:["Late-night show, baby! But it's {t}. SLEEP!","Whisper mode... it's {t}, go to bed, listener!"],
-    morning:["GOOOD MORNING, LISTENER! You're live on Radio Kuro!","Rise and shine! Forecast: you, being awesome!"],
-    day:["YEAHHH! It's {t} and you're still crushing it!","Stretch break! I'll keep the music going!"],
-    evening:["Evening drive-time! You made it through the day!","Dinner time! Eat something real, okay?"],
-    lowbatt:["Battery at {b}%! Plug in before we go off air!"],
-    task:["Hot tip from the studio: \"{task}\"! GO GO GO!"],
-    pet:["Hey hey HEY, watch the hair! ...okay, keep going.","Aww, best listener EVER!","Careful, I'll start singing!"],
-    song:["NEXT UP: {s}! TURN IT UP!","Oh, this one slaps! {s}, everybody!"],
-    like:["Added to the hall of fame! Great taste, listener!"],
-    weather:["Weather report! 6 degrees and cloudy in Bergsdorf. JACKET!"],
-    heart:["It's beating, listener! That's a GREAT sign!"]}
+ a:{night:["It's {t}. Phone down. Sleep.","{t}. You're making tomorrow harder. Bed.","I'm not doing this with you at {t}.","Your eyes are going to hurt tomorrow. Close them now.","Whatever you're reading can wait until morning.","Sleep is not optional. Go.","I can see the screen light from here. Off.","You have work tomorrow. Act like it."],
+    morning:["Morning. Water first.","You've got somewhere to be. Move.","Eat something before you leave.","Don't check your phone in bed for an hour. Get up.","Brush your teeth. Then talk to me.","Pack your bag now, not five minutes before you leave.","Coffee doesn't count as breakfast.","You're awake. Good. Keep it that way."],
+    day:["Did you do the thing you said you'd do?","You've been scrolling. Five more minutes, then something useful.","Hydrate. That's not a suggestion.","Sit up straight. Your back will thank you later.","When did you last eat?","Put the phone down and look at something far away for a minute.","Pick one task. Finish it. Then the next one.","You don't need to answer every message right now.","Take a break. A real one, away from the screen.","If it takes two minutes, do it now."],
+    evening:["Finish what you started. Then rest.","Plan tomorrow now, not at midnight.","Fine. You did enough today.","Eat a real dinner. Not snacks.","Lay out your things for tomorrow.","Write it down so you stop thinking about it.","Start winding down. No new episodes.","You worked hard today. I noticed."],
+    lowbatt:["{b}% battery. Charge it.","Your phone is at {b}%. That's a problem.","{b}%. Plug it in before it dies on you.","If your phone dies, I can't remind you of anything. Charger. Now."],
+    task:["\"{task}\". Still on your list.","You wrote \"{task}\". Do it.","\"{task}\" isn't going to finish itself.","Start \"{task}\". Ten minutes. That's all I'm asking."],
+    pet:["...Thirty seconds.","Don't make this a habit.","...Hm. Fine.","My hair is not a stress toy.","...You're lucky I'm tired.","Okay. That's enough. ...Maybe a little more.","I'll allow it. Once."],
+    ok:["Good.","Then do it.","Hm.","I'll hold you to that.","That's what I like to hear."],
+    snooze:["No.","Five minutes. I'm counting.","You said that an hour ago.","Snoozing isn't a plan.","Fine. But I'm watching the clock."],
+    clock:["Yes, it's {t}. You can read.","It's {t}. Use the time well."],
+    cat:["...Is the cat fed?","Leave the cat alone. ...Fine, one more pet.","Cats sleep sixteen hours a day. Learn from them."],
+    song:["Turn that down.","...This one's fine.","You're listening to this again?"],
+    gameWin:["Not bad. Those cats are in good hands.","Fast reflexes. You'd make a decent hero."],
+    gameLose:["The cats escaped. Try again.","You dropped most of them. Focus."]},
+ m:{night:["Late-night show, baby! But it's {t}. SLEEP!","Whisper mode... it's {t}, go to bed, listener!","This is Radio Mic signing off for the night. You should too!","Shota's gonna be mad you're up. Just saying!","Night-owl hour! Put on something calm and close your eyes!","Last song of the night, then BED, okay?"],
+    morning:["GOOOD MORNING, LISTENER! You're live on Radio Kuro!","Rise and shine! Forecast: you, being awesome!","Wakey wakey! New day, new chances, LET'S GO!","Morning! Did you eat? Don't lie to the radio host!","Stretch it out! Big arms! Bigger arms! YEAH!","First song of the day is on you, listener! Make it a banger!"],
+    day:["YEAHHH! It's {t} and you're still crushing it!","Stretch break! I'll keep the music going!","Shoutout to the best listener in the world: YOU!","Midday check-in! Water? Food? Vibes? Good!","You're doing better than you think, listener!","Quick reminder from the studio: you're awesome!","Pop quiz! Did you drink water today? ...Go drink some!","Afternoon energy boost! HEY HEY HEY!"],
+    evening:["Evening drive-time! You made it through the day!","Dinner time! Eat something real, okay?","Golden hour on Radio Kuro! Chill vibes only!","Hey, you survived another day! That's worth a song!","Evening shoutout to everyone who's tired but still going!","Wind-down playlist incoming! Get comfy!"],
+    lowbatt:["Battery at {b}%! Plug in before we go off air!","{b}% left! Find a charger, listener, QUICK!","Signal's fading! {b}%! Charger, charger, CHARGER!"],
+    task:["Hot tip from the studio: \"{task}\"! GO GO GO!","Breaking news: \"{task}\" is still waiting for you!","I'll play your favorite song if you finish \"{task}\"!"],
+    pet:["Hey hey HEY, watch the hair! ...okay, keep going.","Aww, best listener EVER!","Careful, I'll start singing!","This took me an HOUR to style! ...it's fine, keep going.","Ha! That tickles!","You're making the radio host blush on air!","Okay, okay, you get a shoutout for that!"],
+    song:["NEXT UP: {s}! TURN IT UP!","Oh, this one slaps! {s}, everybody!","You're listening to Radio Kuro! Now playing: {s}!","{s}! Great pick, listener!","Volume up for {s}! YEAH!","Here comes {s}! Sing along if you know it!","Ooh, {s}! Your taste is unmatched!","Coming in hot: {s}!"],
+    play:["And we're back ON AIR!","Music's on! Let's GOOO!","Hit it! The show goes on!"],
+    pause:["Taking a little break? I'll be right here!","Music paused! Studio's quiet... too quiet!"],
+    like:["Added to the hall of fame! Great taste, listener!","Saved! This one's going on the playlist forever!","You liked it? I LOVE that you liked it!"],
+    weather:["Weather report! 6 degrees and cloudy in Bergsdorf. JACKET!","It's chilly out there! Scarf like Shota, maybe?","Clouds today! Perfect weather for headphones!"],
+    heart:["It's beating, listener! That's a GREAT sign!","Your heart? Full of good music, obviously!"]}
 };
 const chars={a:{def:"aizawa.exe"},m:{def:"MIC"}};
 function phHTML(){return `<div class="ph"><div><img src="${I.person}" alt="">NO SPRITE<br>START → SPRITES</div></div>`}
-function render(id,state){const c=chars[id],st=$("st-"+id),src=c.img[state]||c.img.idle;st.querySelectorAll(".ph,.spr").forEach(n=>n.remove());
-  if(!src){st.insertAdjacentHTML("afterbegin",phHTML());return}const im=new Image();im.className="spr";im.alt="";im.src=src;st.prepend(im)}
+function build(id){const c=chars[id],st=$("st-"+id);st.querySelectorAll(".ph,.spr").forEach(n=>n.remove());c.els={};
+  if(!c.img.idle&&!c.img.talk&&!c.img.pet){st.insertAdjacentHTML("afterbegin",phHTML());return}
+  ["pet","talk","idle"].forEach(k=>{if(!c.img[k])return;const im=new Image();im.className="spr";im.alt="";im.decoding="sync";im.src=c.img[k];im.hidden=true;st.prepend(im);c.els[k]=im});render(id,"idle")}
+function render(id,state){const c=chars[id];if(!c.els)return;const keys=Object.keys(c.els);if(!keys.length)return;
+  const k=c.els[state]?state:(c.els.idle?"idle":keys[0]);if(c.shown===k)return;c.shown=k;keys.forEach(s=>c.els[s].hidden=s!==k)}
 function bondUI(id){const el=$("bd-"+id),n=Math.round(chars[id].bond/10);el.innerHTML=Array.from({length:10},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("")}
-function loadChar(id){const c=chars[id];c.img=store.get("spr-"+id,{});c.bond=store.get("bond-"+id,30);c.name=store.get("name-"+id,c.def);$("nm-"+id).textContent=c.name;render(id,"idle");bondUI(id)}
+function loadChar(id){const c=chars[id];c.img=store.get("spr-"+id,{});c.bond=store.get("bond-"+id,30);c.name=store.get("name-"+id,c.def);$("nm-"+id).textContent=c.name;build(id);bondUI(id)}
 function bump(id,n){const c=chars[id];c.bond=Math.max(0,Math.min(100,c.bond+n));store.set("bond-"+id,c.bond);bondUI(id)}
 function ctxKey(){const h=new Date().getHours();if(h<5||h>=23)return"night";if(h<11)return"morning";if(h<18)return"day";return"evening"}
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -543,7 +564,7 @@ function say(id,text,pet){
   let i=0,open=false;st.classList.add("talk");
   c.flap=setInterval(()=>{open=!open;render(id,pet?"pet":(open?"talk":"idle"))},140);
   c.type=setInterval(()=>{i++;box.innerHTML=pre+text.slice(0,i).replace(/</g,"&lt;");if(i%3===0)blip(id==="a"?220:520,.03,"square",.02);
-    if(i>=text.length){clearInterval(c.type);setTimeout(()=>{clearInterval(c.flap);st.classList.remove("talk");render(id,"idle")},pet?900:250)}},30);
+    if(i>=text.length){clearInterval(c.type);c.type=null;setTimeout(()=>{clearInterval(c.flap);st.classList.remove("talk");render(id,"idle")},pet?900:250)}},30);
 }
 function react(id,kind){let k=kind;
   if(!k){const lb=battery&&battery.level<.2&&!battery.charging;k=lb&&Math.random()<.5?"lowbatt":(firstTask()&&Math.random()<.3?"task":ctxKey())}
@@ -552,9 +573,10 @@ function react(id,kind){let k=kind;
   loadChar(id);const st=$("st-"+id);let down=null,last=null,dist=0,petted=false;
   st.addEventListener("pointerdown",e=>{down=last={x:e.clientX,y:e.clientY};dist=0;petted=false;st.setPointerCapture(e.pointerId)});
   st.addEventListener("pointermove",e=>{if(!down)return;dist+=Math.hypot(e.clientX-last.x,e.clientY-last.y);last={x:e.clientX,y:e.clientY};
-    if(dist>120&&!petted){petted=true;render(id,"pet")}
-    if(petted&&Math.random()<.14){const r=st.getBoundingClientRect(),h=new Image();h.src=I.heart;h.className="heart";h.style.left=(e.clientX-r.left-9)+"px";h.style.top=(e.clientY-r.top-12)+"px";st.appendChild(h);setTimeout(()=>h.remove(),1000);blip(900+Math.random()*400,.05,"triangle",.03)}});
-  st.addEventListener("pointerup",()=>{if(!down)return;down=null;if(petted){bump(id,4);react(id,"pet");try{navigator.vibrate&&navigator.vibrate([10,40,10])}catch(e){}}else{bump(id,1);react(id)}});
+    if(dist>28&&!petted){petted=true;render(id,"pet");bump(id,3);react(id,"pet");try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}}
+    if(petted)render(id,"pet");
+    if(petted&&Math.random()<.3){const r=st.getBoundingClientRect(),h=new Image();h.src=I.heart;h.className="heart";h.style.left=(e.clientX-r.left-9)+"px";h.style.top=(e.clientY-r.top-12)+"px";st.appendChild(h);setTimeout(()=>h.remove(),1000);blip(900+Math.random()*400,.05,"triangle",.03)}});
+  st.addEventListener("pointerup",()=>{if(!down)return;down=null;if(petted){bump(id,1);if(!chars[id].type)render(id,"idle")}else{bump(id,1);react(id)}});
   st.addEventListener("pointercancel",()=>{down=null;render(id,"idle")});
   st.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();react(id)}});
 });
@@ -574,7 +596,7 @@ function iconsHTML(list){return list.map(([n,k,b])=>`<button class="ico" data-ap
 $("dock").innerHTML=iconsHTML(dock);$("drawer").innerHTML=iconsHTML(drawer);
 document.querySelectorAll(".ico").forEach(b=>b.onclick=()=>{document.querySelectorAll(".ico").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
   if(b.dataset.app==="Settings")return openStart();
-  if(b.dataset.app==="Games")return $("pages").scrollTo({left:$("pages").clientWidth,behavior:"smooth"});
+  if(b.dataset.app==="Games")return gamesWin();
   openApp(b.dataset.app)});
 const PKG={Discord:["com.discord"],TikTok:["com.zhiliaoapp.musically","com.ss.android.ugc.trill"],Spotify:["com.spotify.music"],Gallery:["com.sec.android.gallery3d","com.google.android.apps.photos"],Search:["com.duckduckgo.mobile.android","com.google.android.googlequicksearchbox"],Camera:["com.sec.android.app.camera"],Browser:["com.duckduckgo.mobile.android","com.sec.android.app.sbrowser","com.android.chrome"],Phone:["com.samsung.android.dialer","com.google.android.dialer"],Files:["com.sec.android.app.myfiles"]};
 function openApp(n,pkg){
@@ -630,9 +652,9 @@ function spriteDlg(id){const c=chars[id];
    <label>Idle<input type="file" accept="image/*" id="dIdle"></label>
    <label>Talking<input type="file" accept="image/*" id="dTalk"></label>
    <label>Petted<input type="file" accept="image/*" id="dPet"></label><p id="dMsg" style="color:#56607a"></p>`,
-   [["Clear",()=>{c.img={};store.set("spr-"+id,{});render(id,"idle");$("dMsg").textContent="Sprites cleared.";return false}],["OK",()=>{const n=$("dName").value.trim();if(n){c.name=n;store.set("name-"+id,n);$("nm-"+id).textContent=n}}]]);
+   [["Clear",()=>{c.img={};store.set("spr-"+id,{});build(id);$("dMsg").textContent="Sprites cleared.";return false}],["OK",()=>{const n=$("dName").value.trim();if(n){c.name=n;store.set("name-"+id,n);$("nm-"+id).textContent=n}}]]);
   [["dIdle","idle"],["dTalk","talk"],["dPet","pet"]].forEach(([inp,key])=>h.querySelector("#"+inp).addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;c.img[key]=await shrink(f,320,"image/webp");
-    $("dMsg").textContent=store.set("spr-"+id,c.img)?key[0].toUpperCase()+key.slice(1)+" sprite saved.":"Loaded, but the browser had no room to save it.";render(id,"idle")}));
+    $("dMsg").textContent=store.set("spr-"+id,c.img)?key[0].toUpperCase()+key.slice(1)+" sprite saved.":"Loaded, but the browser had no room to save it.";build(id)}));
 }
 function wallDlg(){const h=dialog("Display Properties",`<p>Pick your own wallpaper. The widgets sit on top of it, just like on your real phone.</p><label>Wallpaper<input type="file" accept="image/*" id="dWall"></label><p id="dMsg" style="color:#56607a"></p>`,
   [["Default",()=>{setWall(null);store.set("wall",null)}],["OK",null]]);
@@ -653,7 +675,7 @@ function act(a){$("smenu").hidden=true;$("ctx").hidden=true;
 document.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>act(b.dataset.act)));
 let lp;
 screen.addEventListener("pointerdown",e=>{if(!e.target.closest(".smenu"))$("smenu").hidden=e.target.closest("#startBtn")?$("smenu").hidden:true;if(!e.target.closest(".ctx"))$("ctx").hidden=true;
-  if(e.target.closest(".pg")&&(e.target.classList.contains("pg")||e.target.classList.contains("icons")||e.target.classList.contains("crew"))){
+  if(e.target.closest(".pg")&&(e.target.classList.contains("pg")||e.target.classList.contains("pgin")||e.target.classList.contains("icons")||e.target.classList.contains("crew"))){
     lp=setTimeout(()=>{const r=screen.getBoundingClientRect(),m=$("ctx");m.hidden=false;m.style.left=Math.min(e.clientX-r.left,r.width-170)+"px";m.style.top=Math.min(e.clientY-r.top,r.height-190)+"px";blip(700)},500)}});
 ["pointerup","pointermove","pointercancel"].forEach(t=>screen.addEventListener(t,e=>{if(t!=="pointermove"||Math.abs(e.movementX)+Math.abs(e.movementY)>4)clearTimeout(lp)}));
 screen.addEventListener("contextmenu",e=>e.preventDefault());
@@ -673,7 +695,8 @@ function launch(n){recent=[n,...recent.filter(x=>x!==n)].slice(0,8);store.set("r
 let letters=[];
 function buildAZ(){letters=[...new Set(APPS.map(a=>a[0][0].toUpperCase()))];$("az").innerHTML=letters.map(L=>`<button data-l="${L}">${L}</button>`).join("")}
 buildAZ();
-window.kuroApps=list=>{APPS.length=0;list.forEach(a=>APPS.push([a.name,"folder",a.pkg,a.icon]));buildAZ();$("dfootNote").textContent="installed apps";if(drawerEl.classList.contains("open"))drawList()};
+$("appsBtn").onclick=openDrawer;
+window.kuroApps=list=>{APPS.length=0;list.forEach(a=>APPS.push([a.name,"folder",a.pkg,a.icon,!!a.game]));buildAZ();$("dfootNote").textContent="installed apps";if(drawerEl.classList.contains("open"))drawList()};
 window.kuroBack=()=>{closeDrawer();$("smenu").hidden=true;$("ctx").hidden=true;$("dlgHost").innerHTML=""};
 window.kuroHome=()=>{kuroBack();$("pages").scrollTo({left:0,behavior:"smooth"})};
 window.kuroResume=()=>{if(NATIVE){try{Android.loadApps()}catch(e){}pollMedia()}};
@@ -699,6 +722,34 @@ let dsw=null;
 drawerEl.addEventListener("pointerdown",e=>{if(e.target.closest("#dBar")||(e.target.closest("#dList")&&dList.scrollTop<=0))dsw=e.clientY});
 drawerEl.addEventListener("pointerup",e=>{if(dsw!==null&&e.clientY-dsw>70)closeDrawer();dsw=null});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
+
+/* ===== games ===== */
+function drawSprite(x,rows,ox,oy,s){rows.forEach((row,y)=>[...row].forEach((ch,X)=>{if(CP[ch]){x.fillStyle=CP[ch];x.fillRect(Math.round(ox+X*s),Math.round(oy+y*s),s,s)}}))}
+function gamesWin(){
+  const list=[["cat_catch.exe","pad",catCatch],["catsitter.exe","folder",()=>$("pages").scrollTo({left:$("pages").clientWidth,behavior:"smooth"})],
+    ...APPS.filter(a=>a[4]).map(a=>[a[0],"pad",()=>openApp(a[0],a[2]),a[3]])];
+  const h=dialog("Games",`<div class="dlist" style="max-height:280px;border:1px solid #7f8796;background:#fff">${list.map((g,i)=>`<button class="app" data-g="${i}"><img src="${g[3]||I[g[1]]}" alt=""><span>${g[0]}</span></button>`).join("")}</div>`,[["Close",null]]);
+  h.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{h.innerHTML="";list[+b.dataset.g][2]()})}
+function catCatch(){
+  const h=dialog("cat_catch.exe",`<canvas id="cg" width="120" height="110" style="display:block;width:100%;image-rendering:pixelated;background:#e7f3ff;border:1px solid #7f8796;touch-action:none"></canvas><p id="cgTx">Tap the falling cats before they land. 20 seconds.</p>`,[["Again",()=>{catCatch();return false}],["Quit",null]]);
+  const cv=h.querySelector("#cg"),x=cv.getContext("2d");let cats=[],score=0,miss=0,t0=performance.now(),last=t0,spawn=0,done=false;
+  function frame(now){if(!cv.isConnected)return;const dt=Math.min(.05,(now-last)/1000);last=now;const left=Math.max(0,20-(now-t0)/1000);
+    spawn-=dt;if(spawn<=0&&left>0){cats.push({x:4+Math.random()*92,y:-18,v:16+Math.random()*16+(20-left)*1.6});spawn=.4+Math.random()*.45}
+    x.clearRect(0,0,120,110);x.fillStyle="#c9d7a8";x.fillRect(0,100,120,10);
+    cats.forEach(c=>{c.y+=c.v*dt;drawSprite(x,CAT[Math.floor(now/200)%2],c.x,c.y,2)});
+    cats=cats.filter(c=>{if(c.y>84){miss++;return false}return true});
+    x.fillStyle="#1d2333";x.font="8px Silkscreen, monospace";x.fillText("SCORE "+score,3,9);x.fillText(Math.ceil(left)+"s",98,9);
+    if(left<=0&&!done&&!cats.length){done=true;const best=Math.max(store.get("bestCat",0),score);store.set("bestCat",best);
+      h.querySelector("#cgTx").textContent=`Caught ${score}, missed ${miss}. Best: ${best}.`;react("a",score>=15?"gameWin":"gameLose");chime();return}
+    requestAnimationFrame(frame)}
+  cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect(),px=(e.clientX-r.left)*120/r.width,py=(e.clientY-r.top)*110/r.height;
+    const i=cats.findIndex(c=>px>c.x-6&&px<c.x+30&&py>c.y-6&&py<c.y+24);if(i>=0){cats.splice(i,1);score++;blip(700+score*25,.06,"triangle",.05)}});
+  requestAnimationFrame(frame)}
+
+/* ===== fit pages to the screen ===== */
+function fit(){document.querySelectorAll(".pgin").forEach(el=>{el.style.zoom="";el.style.width="";const pg=el.parentElement,avail=pg.clientHeight,need=el.scrollHeight;
+  if(avail&&need>avail){const z=Math.max(.6,avail/need);el.style.zoom=z;el.style.width=(100/z)+"%"}})}
+addEventListener("resize",fit);if(document.fonts)document.fonts.ready.then(fit);setTimeout(fit,300);fit();
 
 function boot(){const b=document.createElement("div");b.className="boot";b.innerHTML=`<div>Kuro<span style="color:#5d97f7">OS</span><small>STARTING UP…</small><div class="bar"><i></i></div></div>`;screen.appendChild(b);setTimeout(()=>{b.remove();chime();react("m","morning")},2200)}
 })();
