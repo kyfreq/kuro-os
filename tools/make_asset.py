@@ -5,7 +5,8 @@ s = (root / "web/prototype.html").read_text()
 head = '''<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<script>if(window.Android)document.documentElement.classList.add("native")</script>
+<script>if(window.Android)document.documentElement.classList.add("native");
+addEventListener("error",e=>{try{let d=document.getElementById("kerr");if(!d){d=document.createElement("div");d.id="kerr";d.style.cssText="position:fixed;left:0;right:0;top:0;z-index:99;background:#c4161c;color:#fff;font:12px monospace;padding:6px";(document.body||document.documentElement).appendChild(d)}d.textContent="Kuro OS error: "+e.message+" (line "+e.lineno+")"}catch(_){}})</script>
 <style>
 [hidden]{display:none!important}img{max-width:100%}
 html.native,html.native body{background:transparent!important;background-image:none!important;margin:0;padding:0!important;width:100%;height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
